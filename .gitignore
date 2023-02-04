@@ -3,4 +3,4 @@ test
 CMakeLists.txt
 cmake-*
 .idea
-run_tests.sh
+runtests.sh
