@@ -92,7 +92,7 @@ extern inline int mimg_uint32_cmp(const void *a, const void *b) {
 }
 
 extern inline stbi_uc mimg_mediani(const stbi_uc *values, const stbi_uc length) {
-    qsort((void *)values, length, sizeof(stbi_uc), mimg_uint32_cmp);
+    qsort((void *) values, length, sizeof(stbi_uc), mimg_uint32_cmp);
     if (length % 2 == 0) {
         return (stbi_uc) round(((double) values[length / 2 - 1] + (double) values[length / 2]) / 2);
     }
@@ -117,8 +117,8 @@ extern inline stbi_uc mimg_sub_clamp(stbi_uc v1, stbi_uc v2) {
 
 void mimg_add(int w, int h, stbi_uc *px1, stbi_uc *px2, stbi_uc *out) {
     stbi_uc r1, g1, b1, r2, g2, b2;
-    for (int x = 0; x < w; x++)
-        for (int y = 0; y < h; y++) {
+    for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++) {
             mimg_get_pixel(px1, w, x, y, &r1, &g1, &b1);
             mimg_get_pixel(px2, w, x, y, &r2, &g2, &b2);
             mimg_set_pixel(out, w, x, y, mimg_add_clamp(r1, r2), mimg_add_clamp(g1, g2), mimg_add_clamp(b1, b2));
@@ -127,8 +127,8 @@ void mimg_add(int w, int h, stbi_uc *px1, stbi_uc *px2, stbi_uc *out) {
 
 void mimg_sub(int w, int h, stbi_uc *px1, stbi_uc *px2, stbi_uc *out) {
     stbi_uc r1, g1, b1, r2, g2, b2;
-    for (int x = 0; x < w; x++)
-        for (int y = 0; y < h; y++) {
+    for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++) {
             mimg_get_pixel(px1, w, x, y, &r1, &g1, &b1);
             mimg_get_pixel(px2, w, x, y, &r2, &g2, &b2);
             mimg_set_pixel(out, w, x, y, mimg_sub_clamp(r1, r2), mimg_sub_clamp(g1, g2), mimg_sub_clamp(b1, b2));
@@ -137,8 +137,8 @@ void mimg_sub(int w, int h, stbi_uc *px1, stbi_uc *px2, stbi_uc *out) {
 
 void mimg_mul(int w, int h, stbi_uc *px, int multiplier, stbi_uc *out) {
     stbi_uc r, g, b;
-    for (int x = 0; x < w; x++)
-        for (int y = 0; y < h; y++) {
+    for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++) {
             mimg_get_pixel(px, w, x, y, &r, &g, &b);
             mimg_set_pixel(out, w, x, y, mimg_clampi(r * multiplier), mimg_clampi(g * multiplier),
                            mimg_clampi(b * multiplier));
@@ -147,8 +147,8 @@ void mimg_mul(int w, int h, stbi_uc *px, int multiplier, stbi_uc *out) {
 
 void mimg_div(int w, int h, stbi_uc *px, int divider, stbi_uc *out) {
     stbi_uc r, g, b;
-    for (int x = 0; x < w; x++)
-        for (int y = 0; y < h; y++) {
+    for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++) {
             mimg_get_pixel(px, w, x, y, &r, &g, &b);
             mimg_set_pixel(out, w, x, y, mimg_clampi(r / divider), mimg_clampi(g / divider), mimg_clampi(b / divider));
         }
@@ -156,8 +156,8 @@ void mimg_div(int w, int h, stbi_uc *px, int divider, stbi_uc *out) {
 
 void mimg_and(int w, int h, stbi_uc *px1, stbi_uc *px2, stbi_uc *out) {
     stbi_uc r1, g1, b1, r2, g2, b2;
-    for (int x = 0; x < w; x++)
-        for (int y = 0; y < h; y++) {
+    for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++) {
             mimg_get_pixel(px1, w, x, y, &r1, &g1, &b1);
             mimg_get_pixel(px2, w, x, y, &r2, &g2, &b2);
             mimg_set_pixel(out, w, x, y, r1 & r2, g1 & g2, b1 & b2);
@@ -166,8 +166,8 @@ void mimg_and(int w, int h, stbi_uc *px1, stbi_uc *px2, stbi_uc *out) {
 
 void mimg_or(int w, int h, stbi_uc *px1, stbi_uc *px2, stbi_uc *out) {
     stbi_uc r1, g1, b1, r2, g2, b2;
-    for (int x = 0; x < w; x++)
-        for (int y = 0; y < h; y++) {
+    for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++) {
             mimg_get_pixel(px1, w, x, y, &r1, &g1, &b1);
             mimg_get_pixel(px2, w, x, y, &r2, &g2, &b2);
             mimg_set_pixel(out, w, x, y, r1 | r2, g1 | g2, b1 | b2);
@@ -176,8 +176,8 @@ void mimg_or(int w, int h, stbi_uc *px1, stbi_uc *px2, stbi_uc *out) {
 
 void mimg_not(int w, int h, stbi_uc *px, stbi_uc *out) {
     stbi_uc r, g, b;
-    for (int x = 0; x < w; x++)
-        for (int y = 0; y < h; y++) {
+    for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++) {
             mimg_get_pixel(px, w, x, y, &r, &g, &b);
             mimg_set_pixel(out, w, x, y, ~r, ~g, ~b);
         }
@@ -195,8 +195,8 @@ void mimg_convolve(int w, int h, stbi_uc *px, stbi_uc *out, int kernel_size, con
     delta_limit = (kernel_size - 1) / 2;
 
     // Square kernel is assumed, so if kernel_size is 3, then we need 3x3 = 9 kernel values
-    for (int x = 0; x < w; x++)
-        for (int y = 0; y < h; y++) {
+    for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++) {
             kernel_idx = 0;
             sum_r = 0;
             sum_g = 0;
@@ -229,8 +229,8 @@ void mimg_noise_saltpepper(int w, int h, stbi_uc *px, stbi_uc *out, uint32_t p_c
     uint32_t pixels_changed = 0, pixels_white = 0, pixels_black = 0;
 #endif
     stbi_uc r, g, b;
-    for (int x = 0; x < w; x++)
-        for (int y = 0; y < h; y++) {
+    for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++) {
             // Decide whether the pixel changes or not
             current_p = mimg_random_range(1, 101);
             if (current_p <= p_change) {
@@ -286,12 +286,12 @@ void mimg_median_filter(int w, int h, stbi_uc *px, stbi_uc *out, int kernel_size
 
     stbi_uc cr, cg, cb, nr, ng, nb;
 
-    for (int x = 0; x < w; x++)
-        for (int y = 0; y < h; y++) {
+    for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++) {
             changed_values = 0;
-            memset((void *) values_r,  0, array_size);
-            memset((void *) values_g,  0, array_size);
-            memset((void *) values_b,  0, array_size);
+            memset((void *) values_r, 0, array_size);
+            memset((void *) values_g, 0, array_size);
+            memset((void *) values_b, 0, array_size);
             for (int dy = -delta_limit; dy <= delta_limit; dy++) {
                 for (int dx = -delta_limit; dx <= delta_limit; dx++) {
 
