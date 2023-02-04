@@ -14,6 +14,7 @@ For licensing (MIT License), see [LICENSE](LICENSE)
 
 - Clamp (integer, double)
 - Random number in range (statistically tested)
+- Median (unsigned char)
 
 ### Image algebra
 
@@ -36,4 +37,5 @@ For licensing (MIT License), see [LICENSE](LICENSE)
 ### Filters
 
 - Mean filter
+- Median filter
 
