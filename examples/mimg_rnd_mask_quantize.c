@@ -24,6 +24,11 @@ int main() {
     stbi_write_jpg("./test/rnd_mask_quantize_5_128.jpg", img1.width, img1.height,
                    MIMG_EXPECTED_N_CHANNELS, new_pixels, MIMG_OUTPUT_JPG_QUALITY);
 
+    mimg_rnd_mask_quantize(img1.width, img1.height, img1.pixels, new_pixels, 7, 128);
+
+    stbi_write_jpg("./test/rnd_mask_quantize_7_128.jpg", img1.width, img1.height,
+                   MIMG_EXPECTED_N_CHANNELS, new_pixels, MIMG_OUTPUT_JPG_QUALITY);
+
     free(new_pixels);
     stbi_image_free(img1.pixels);
 
