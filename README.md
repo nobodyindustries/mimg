@@ -41,3 +41,8 @@ For licensing (MIT License), see [LICENSE](LICENSE)
 - Laplacian sharpen
 - Directional sharpen by difference
 
+## Quantization
+
+- Threshold quantization
+- Mask quantization
+

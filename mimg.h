@@ -367,4 +367,32 @@ void mimg_diff_directional_sharpen(int w, int h, stbi_uc *px, stbi_uc *out, MIMG
     mimg_convolve(w, h, px, out, MIMG_DIFF_DIRECTIONAL_KERNEL_SIZE, (double *) kernel_values);
 }
 
+/** QUANTIZATION **/
+
+void mimg_threshold_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc threshold) {
+    stbi_uc r, g, b, nr, ng, nb;
+    for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++) {
+            nr = 0;
+            ng = 0;
+            nb = 0;
+            mimg_get_pixel(px, w, x, y, &r, &g, &b);
+            if(r > threshold) nr = 255;
+            if(g > threshold) ng = 255;
+            if(b > threshold) nb = 255;
+            mimg_set_pixel(out, w, x, y, nr, ng, nb);
+        }
+}
+
+void mimg_mask_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc mask_len) {
+    assert(mask_len >= 0 && mask_len <= 8);
+    stbi_uc mask = 0xFF << mask_len;
+    stbi_uc r, g, b;
+    for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++) {
+            mimg_get_pixel(px, w, x, y, &r, &g, &b);
+            mimg_set_pixel(out, w, x, y, r & mask, g & mask, b & mask);
+        }
+}
+
 #endif //MIMG_H

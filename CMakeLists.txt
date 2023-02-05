@@ -37,5 +37,9 @@ add_executable(mimg_laplacian_sharpen examples/mimg_laplacian_sharpen.c ${MIMG_L
 
 add_executable(mimg_diff_directional_sharpen examples/mimg_diff_directional_sharpen.c ${MIMG_LIBRARIES})
 
+add_executable(mimg_threshold_quantize examples/mimg_threshold_quantize.c ${MIMG_LIBRARIES})
+
+add_executable(mimg_mask_quantize examples/mimg_mask_quantize.c ${MIMG_LIBRARIES})
+
 
 file(COPY test/original DESTINATION test)
