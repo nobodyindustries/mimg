@@ -1,6 +1,4 @@
 *.c
-test
-CMakeLists.txt
+test/*.jpg
 cmake-*
 .idea
-runtests.sh

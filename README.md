@@ -39,4 +39,5 @@ For licensing (MIT License), see [LICENSE](LICENSE)
 - Mean filter
 - Median filter
 - Laplacian sharpen
+- Directional sharpen by difference
 

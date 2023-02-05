@@ -28,11 +28,21 @@
 #define MIMG_UC_MAX 255
 
 #define MIMG_LAPLACIAN_KERNEL_SIZE 3
+#define MIMG_DIFF_DIRECTIONAL_KERNEL_SIZE 3
 
 /** MACRO DEFINITIONS **/
 
 #define MIMG_COORD_IDX(w, x, y) (3 * (((y) * (w)) + (x)))
 #define MIMG_COORDS_VALID(w, h, x, y) ((x) >= 0) && ((x) < (w)) && ((y) >= 0) && ((y) < (h))
+
+/** TYPE DEFINITIONS **/
+
+typedef enum mimg_direction {
+    MIMG_VERTICAL = 0,
+    MIMG_HORIZONTAL = 1,
+    MIMG_DIAGONAL_LR = 2,
+    MIMG_DIAGONAL_RL = 3,
+} MIMG_DIRECTION;
 
 /**
  * STBImg
@@ -320,12 +330,41 @@ void mimg_median_filter(int w, int h, stbi_uc *px, stbi_uc *out, int kernel_size
 }
 
 void mimg_laplacian_sharpen(int w, int h, stbi_uc *px, stbi_uc *out) {
-    double kernel_values[MIMG_LAPLACIAN_KERNEL_SIZE * MIMG_LAPLACIAN_KERNEL_SIZE] = {
+    double kernel_values[] = {
             0, -1, 0,
             -1, 5, -1,
             0, -1, 0
     };
     mimg_convolve(w, h, px, out, MIMG_LAPLACIAN_KERNEL_SIZE, (double *) kernel_values);
+}
+
+void mimg_diff_directional_sharpen(int w, int h, stbi_uc *px, stbi_uc *out, MIMG_DIRECTION dir) {
+    double kernel_values[MIMG_DIFF_DIRECTIONAL_KERNEL_SIZE * MIMG_DIFF_DIRECTIONAL_KERNEL_SIZE];
+    switch(dir) {
+        case MIMG_VERTICAL:
+            kernel_values[0] = 0; kernel_values[1] = 1; kernel_values[2] = 0;
+            kernel_values[3] = 0; kernel_values[4] = 1; kernel_values[5] = 0;
+            kernel_values[6] = 0; kernel_values[7] = -1; kernel_values[8] = 0;
+            break;
+        case MIMG_HORIZONTAL:
+            kernel_values[0] = 0; kernel_values[1] = 0; kernel_values[2] = 0;
+            kernel_values[3] = 1; kernel_values[4] = 1; kernel_values[5] = -1;
+            kernel_values[6] = 0; kernel_values[7] = 0; kernel_values[8] = 0;
+            break;
+        case MIMG_DIAGONAL_LR:
+            kernel_values[0] = 1; kernel_values[1] = 0; kernel_values[2] = 0;
+            kernel_values[3] = 0; kernel_values[4] = 1; kernel_values[5] = 0;
+            kernel_values[6] = 0; kernel_values[7] = 0; kernel_values[8] = -1;
+            break;
+        case MIMG_DIAGONAL_RL:
+            kernel_values[0] = 0;  kernel_values[1] = 0; kernel_values[2] = 1;
+            kernel_values[3] = 0;  kernel_values[4] = 1; kernel_values[5] = 0;
+            kernel_values[6] = -1; kernel_values[7] = 0; kernel_values[8] = 0;
+            break;
+        default:
+            break;
+    }
+    mimg_convolve(w, h, px, out, MIMG_DIFF_DIRECTIONAL_KERNEL_SIZE, (double *) kernel_values);
 }
 
 #endif //MIMG_H
