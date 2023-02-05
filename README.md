@@ -1,6 +1,6 @@
 # MIMG
 
-A small, multiplatform, didactic image processing library with minimal dependencies implemented in the C programming language.
+A small, multiplatform, didactic image processing library with minimal dependencies implemented in the C programming language. You can think of it as a more lightweight, easier to use and understand OpenCV with only image manipulation features.
 
 All the images are expected to have three channels (RGB, no alpha). Maybe this can change in the future. All the dependencies are self-contained and stored in the `/lib` directory
 

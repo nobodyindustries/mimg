@@ -320,18 +320,12 @@ void mimg_median_filter(int w, int h, stbi_uc *px, stbi_uc *out, int kernel_size
 }
 
 void mimg_laplacian_sharpen(int w, int h, stbi_uc *px, stbi_uc *out) {
-    double *kernel_values = calloc(MIMG_LAPLACIAN_KERNEL_SIZE * MIMG_LAPLACIAN_KERNEL_SIZE, sizeof(double));
-    kernel_values[0] = 0;
-    kernel_values[1] = -1;
-    kernel_values[2] = 0;
-    kernel_values[3] = -1;
-    kernel_values[4] = 5;
-    kernel_values[5] = -1;
-    kernel_values[6] = 0;
-    kernel_values[7] = -1;
-    kernel_values[8] = 0;
-    mimg_convolve(w, h, px, out, 9, kernel_values);
-    free(kernel_values);
+    double kernel_values[MIMG_LAPLACIAN_KERNEL_SIZE * MIMG_LAPLACIAN_KERNEL_SIZE] = {
+            0, -1, 0,
+            -1, 5, -1,
+            0, -1, 0
+    };
+    mimg_convolve(w, h, px, out, MIMG_LAPLACIAN_KERNEL_SIZE, (double *) kernel_values);
 }
 
 #endif //MIMG_H
