@@ -41,5 +41,7 @@ add_executable(mimg_threshold_quantize examples/mimg_threshold_quantize.c ${MIMG
 
 add_executable(mimg_mask_quantize examples/mimg_mask_quantize.c ${MIMG_LIBRARIES})
 
+add_executable(mimg_rnd_mask_quantize examples/mimg_rnd_mask_quantize.c ${MIMG_LIBRARIES})
+
 
 file(COPY test/original DESTINATION test)

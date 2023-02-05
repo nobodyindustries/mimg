@@ -386,11 +386,28 @@ void mimg_threshold_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc th
 
 void mimg_mask_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc mask_len) {
     assert(mask_len >= 0 && mask_len <= 8);
+    // We keep the high bits which contain more information
     stbi_uc mask = 0xFF << mask_len;
     stbi_uc r, g, b;
     for (int y = 0; y < h; y++)
         for (int x = 0; x < w; x++) {
             mimg_get_pixel(px, w, x, y, &r, &g, &b);
+            mimg_set_pixel(out, w, x, y, r & mask, g & mask, b & mask);
+        }
+}
+
+void mimg_rnd_mask_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc mask_len, stbi_uc random_max) {
+    assert(mask_len >= 0 && mask_len <= 8);
+    assert(random_max >= 0 && random_max <= 255);
+    // We keep the high bits which contain more information
+    stbi_uc mask = 0xFF << mask_len;
+    stbi_uc r, g, b;
+    for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++) {
+            mimg_get_pixel(px, w, x, y, &r, &g, &b);
+            r = (stbi_uc) mimg_clampi((int) r + mimg_random_range(0, (uint32_t) random_max));
+            g = (stbi_uc) mimg_clampi((int) g + mimg_random_range(0, (uint32_t) random_max));
+            b = (stbi_uc) mimg_clampi((int) b + mimg_random_range(0, (uint32_t) random_max));
             mimg_set_pixel(out, w, x, y, r & mask, g & mask, b & mask);
         }
 }

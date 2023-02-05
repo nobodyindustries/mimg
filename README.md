@@ -45,4 +45,5 @@ For licensing (MIT License), see [LICENSE](LICENSE)
 
 - Threshold quantization
 - Mask quantization
+- Mask quantization with random addition
 
