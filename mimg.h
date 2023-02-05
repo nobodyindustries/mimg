@@ -27,6 +27,8 @@
 #define MIMG_OUTPUT_JPG_QUALITY 100
 #define MIMG_UC_MAX 255
 
+#define MIMG_LAPLACIAN_KERNEL_SIZE 3
+
 /** MACRO DEFINITIONS **/
 
 #define MIMG_COORD_IDX(w, x, y) (3 * (((y) * (w)) + (x)))
@@ -316,9 +318,6 @@ void mimg_median_filter(int w, int h, stbi_uc *px, stbi_uc *out, int kernel_size
     free(values_g);
     free(values_b);
 }
-
-
-#define MIMG_LAPLACIAN_KERNEL_SIZE 3
 
 void mimg_laplacian_sharpen(int w, int h, stbi_uc *px, stbi_uc *out) {
     double *kernel_values = calloc(MIMG_LAPLACIAN_KERNEL_SIZE * MIMG_LAPLACIAN_KERNEL_SIZE, sizeof(double));
