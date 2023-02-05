@@ -38,5 +38,5 @@ For licensing (MIT License), see [LICENSE](LICENSE)
 
 - Mean filter
 - Median filter
-- Laplacian detail enhancement filter
+- Laplacian sharpen
 
