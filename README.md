@@ -8,6 +8,8 @@ If you want to collaborate, just drop pull requests. That would make me very hap
 
 For licensing (MIT License), see [LICENSE](LICENSE)
 
+All images in the `test/original` folder are cuts of images under Creative Commons CC0 license.
+
 ## Current features
 
 ### Mathematical aids
