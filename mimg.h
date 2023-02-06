@@ -419,11 +419,12 @@ void mimg_uniform_bin_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc 
     stbi_uc *values = calloc((size_t) n_bins, sizeof(stbi_uc));
     // By taking the ceiling we guarantee all numbers in [0, 255] are represented
     int increment = (int) ceil(255.0 / (double) n_bins);
-    stbi_uc upper_value;
+    stbi_uc upper_value, previous_value;
     for(int i = 0; i < n_bins; i++) {
+        previous_value = mimg_clampi(increment * i);
         upper_value = mimg_clampi(increment * (i + 1));
         limits[i] = upper_value;
-        values[i] = (stbi_uc) round((double) upper_value / 2.0);
+        values[i] = ((stbi_uc) round((double) (upper_value - previous_value) / 2.0)) + previous_value;
     }
     stbi_uc r, g, b, nr, ng, nb, idx;
     for (int y = 0; y < h; y++)
