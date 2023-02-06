@@ -48,4 +48,5 @@ All images in the `test/original` folder are cuts of images under Creative Commo
 - Threshold quantization
 - Mask quantization
 - Mask quantization with random addition
+- Uniform bin quantization
 

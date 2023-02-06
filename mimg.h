@@ -412,4 +412,46 @@ void mimg_rnd_mask_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc mas
         }
 }
 
+void mimg_uniform_bin_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc n_bins) {
+    // Upper limit of each bin
+    stbi_uc *limits = calloc((size_t) n_bins, sizeof(stbi_uc));
+    // Mid value of each bin
+    stbi_uc *values = calloc((size_t) n_bins, sizeof(stbi_uc));
+    // By taking the ceiling we guarantee all numbers in [0, 255] are represented
+    int increment = (int) ceil(255.0 / (double) n_bins);
+    stbi_uc upper_value;
+    for(int i = 0; i < n_bins; i++) {
+        upper_value = mimg_clampi(increment * (i + 1));
+        limits[i] = upper_value;
+        values[i] = (stbi_uc) round((double) upper_value / 2.0);
+    }
+    stbi_uc r, g, b, nr, ng, nb, idx;
+    for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++) {
+            mimg_get_pixel(px, w, x, y, &r, &g, &b);
+            // We determine channels and values
+            for(idx = 0; idx < n_bins; idx++) {
+                if(r <= limits[idx]) {
+                    nr = values[idx];
+                    break;
+                }
+            }
+            for(idx = 0; idx < n_bins; idx++) {
+                if(g <= limits[idx]) {
+                    ng = values[idx];
+                    break;
+                }
+            }
+            for(idx = 0; idx < n_bins; idx++) {
+                if(b <= limits[idx]) {
+                    nb = values[idx];
+                    break;
+                }
+            }
+            mimg_set_pixel(out, w, x, y, nr, ng, nb);
+        }
+    free(limits);
+    free(values);
+}
+
 #endif //MIMG_H
