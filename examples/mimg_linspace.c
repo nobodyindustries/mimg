@@ -40,5 +40,10 @@ int main() {
     print_array("TEST 5", values, 27);
     free(values);
 
+    values = calloc(5, sizeof (stbi_uc));
+    mimg_linspace(values, 5, 1, 2);
+    print_array("TEST 6", values, 5);
+    free(values);
+
     return 0;
 }
