@@ -45,5 +45,9 @@ add_executable(mimg_rnd_mask_quantize examples/mimg_rnd_mask_quantize.c ${MIMG_L
 
 add_executable(mimg_uniform_bin_quantize examples/mimg_uniform_bin_quantize.c ${MIMG_LIBRARIES})
 
+add_executable(mimg_logarithmic_bin_quantize examples/mimg_logarithmic_bin_quantize.c ${MIMG_LIBRARIES})
+
+add_executable(mimg_linspace examples/mimg_linspace.c ${MIMG_LIBRARIES})
+
 
 file(COPY test/original DESTINATION test)
