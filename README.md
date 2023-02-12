@@ -47,9 +47,10 @@ All images in the `test/original` folder are cuts of images under Creative Commo
 
 ### Quantization
 
-- Threshold quantization
-- Mask quantization
-- Mask quantization with random addition
-- Uniform bin quantization
-- Logarithmic bin quantization
+- Threshold color quantization
+- Mask color quantization
+- Mask color quantization with random addition
+- Uniform bin color quantization
+- Logarithmic bin color quantization
+- 
 

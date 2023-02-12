@@ -10,23 +10,23 @@ int main() {
 
     stbi_uc *new_pixels = calloc(MIMG_EXPECTED_N_CHANNELS * img1.height * img1.width, sizeof(stbi_uc));
 
-    mimg_uniform_bin_quantize(img1.width, img1.height, img1.pixels, new_pixels, 2);
+    mimg_uniform_bin_color_quantize(img1.width, img1.height, img1.pixels, new_pixels, 2);
 
     stbi_write_jpg("./test/mimg_uniform_bin_quantize_2.jpg", img1.width, img1.height,
                    MIMG_EXPECTED_N_CHANNELS, new_pixels, MIMG_OUTPUT_JPG_QUALITY);
 
-    mimg_uniform_bin_quantize(img1.width, img1.height, img1.pixels, new_pixels, 4);
+    mimg_uniform_bin_color_quantize(img1.width, img1.height, img1.pixels, new_pixels, 4);
 
     stbi_write_jpg("./test/mimg_uniform_bin_quantize_4.jpg", img1.width, img1.height,
                    MIMG_EXPECTED_N_CHANNELS, new_pixels, MIMG_OUTPUT_JPG_QUALITY);
 
-    mimg_uniform_bin_quantize(img1.width, img1.height, img1.pixels, new_pixels, 9);
+    mimg_uniform_bin_color_quantize(img1.width, img1.height, img1.pixels, new_pixels, 9);
 
     stbi_write_jpg("./test/mimg_uniform_bin_quantize_9.jpg", img1.width, img1.height,
                    MIMG_EXPECTED_N_CHANNELS, new_pixels, MIMG_OUTPUT_JPG_QUALITY);
 
     // This one should look exactly like the original
-    mimg_uniform_bin_quantize(img1.width, img1.height, img1.pixels, new_pixels, 255);
+    mimg_uniform_bin_color_quantize(img1.width, img1.height, img1.pixels, new_pixels, 255);
 
     stbi_write_jpg("./test/mimg_uniform_bin_quantize_255.jpg", img1.width, img1.height,
                    MIMG_EXPECTED_N_CHANNELS, new_pixels, MIMG_OUTPUT_JPG_QUALITY);

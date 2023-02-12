@@ -431,9 +431,9 @@ void mimg_diff_directional_sharpen(int w, int h, stbi_uc *px, stbi_uc *out, MIMG
     mimg_convolve(w, h, px, out, MIMG_DIFF_DIRECTIONAL_KERNEL_SIZE, (double *) kernel_values);
 }
 
-/** QUANTIZATION **/
+/** COLOR QUANTIZATION **/
 
-void mimg_threshold_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc threshold) {
+void mimg_threshold_color_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc threshold) {
     stbi_uc r, g, b, nr, ng, nb;
     for (int y = 0; y < h; y++)
         for (int x = 0; x < w; x++) {
@@ -448,7 +448,7 @@ void mimg_threshold_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc th
         }
 }
 
-void mimg_mask_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc mask_len) {
+void mimg_mask_color_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc mask_len) {
     assert(mask_len >= 0 && mask_len <= 8);
     // We keep the high bits which contain more information
     stbi_uc mask = 0xFF << mask_len;
@@ -460,7 +460,7 @@ void mimg_mask_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc mask_le
         }
 }
 
-void mimg_rnd_mask_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc mask_len, stbi_uc random_max) {
+void mimg_rnd_mask_color_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc mask_len, stbi_uc random_max) {
     assert(mask_len >= 0 && mask_len <= 8);
     assert(random_max >= 0 && random_max <= 255);
     // We keep the high bits which contain more information
@@ -476,6 +476,7 @@ void mimg_rnd_mask_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc mas
         }
 }
 
+// This function can be used for arbitrary bin quantification.
 static void mimg_bin_classify(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc n_bins, stbi_uc *limits, stbi_uc *values) {
     stbi_uc r, g, b, nr, ng, nb, idx;
     for (int y = 0; y < h; y++)
@@ -504,7 +505,7 @@ static void mimg_bin_classify(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc n
         }
 }
 
-void mimg_uniform_bin_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc n_bins) {
+void mimg_uniform_bin_color_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc n_bins) {
     // Upper limit of each bin
     stbi_uc *limits = calloc((size_t) n_bins, sizeof(stbi_uc));
     // Mid value of each bin
@@ -529,7 +530,7 @@ void mimg_uniform_bin_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc 
     free(values);
 }
 
-void mimg_logarithmic_bin_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc n_bins) {
+void mimg_logarithmic_bin_color_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc n_bins) {
     assert(n_bins > 0);
 
     // Upper limit of each bin
@@ -555,5 +556,7 @@ void mimg_logarithmic_bin_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi
     free(limits);
     free(values);
 }
+
+/** SPATIAL QUANTIZATION **/
 
 #endif //MIMG_H
