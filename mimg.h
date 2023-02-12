@@ -544,8 +544,13 @@ void mimg_logarithmic_bin_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi
         values[i] = ((stbi_uc) round((double) (base[i + 1] - base[i]) / 2.0)) + base[i];
     }
 
-    mimg_bin_classify(w, h, px, out, n_bins, limits, values);
+#ifdef MIMG_DEBUG
+    mimg_print_array("LOGARITHMIC BIN QUANTIZE - BASE", base, n_bins + 1);
+    mimg_print_array("LOGARITHMIC BIN QUANTIZE - LIMITS", limits, n_bins);
+    mimg_print_array("LOGARITHMIC BIN QUANTIZE - VALUES", values, n_bins);
+#endif
 
+    mimg_bin_classify(w, h, px, out, n_bins, limits, values);
     free(base);
     free(limits);
     free(values);
