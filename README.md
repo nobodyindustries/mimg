@@ -18,7 +18,7 @@ All images in the `test/original` folder are cuts of images under Creative Commo
 - Random number in range (statistically tested)
 - Median (unsigned char)
 - Linearly spaced vector of points in range with specific length
-- **TODO**: Logarithmically spaced vector of points in range with specific length
+- Logarithmically spaced vector of points in range with specific length
 
 ### Image algebra
 
@@ -51,5 +51,5 @@ All images in the `test/original` folder are cuts of images under Creative Commo
 - Mask quantization
 - Mask quantization with random addition
 - Uniform bin quantization
-- **TODO**: Logarithmic bin quantization
+- Logarithmic bin quantization
 
