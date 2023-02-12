@@ -49,5 +49,8 @@ add_executable(mimg_logarithmic_bin_quantize examples/mimg_logarithmic_bin_quant
 
 add_executable(mimg_linspace examples/mimg_linspace.c ${MIMG_LIBRARIES})
 
+add_executable(mimg_logspace examples/mimg_logspace.c ${MIMG_LIBRARIES})
+
+
 
 file(COPY test/original DESTINATION test)

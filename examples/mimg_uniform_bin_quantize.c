@@ -1,3 +1,4 @@
+#define MIMG_DEBUG
 #include "../mimg.h"
 
 int main() {

@@ -2,6 +2,7 @@
 #define MIMG_H
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 #ifdef MIMG_DEBUG
 
@@ -44,11 +45,6 @@ typedef enum mimg_direction {
     MIMG_DIAGONAL_RL = 3,
 } MIMG_DIRECTION;
 
-typedef enum mimg_order {
-    MIMG_ASCENDING = 0,
-    MIMG_DESCENDING = 1,
-} MIMG_ORDER;
-
 /**
  * STBImg
  *
@@ -75,6 +71,23 @@ extern inline void mimg_get_pixel(stbi_uc *pixels, int w, int x, int y, stbi_uc 
     *g = pixels[MIMG_COORD_IDX(w, x, y) + 1];
     *b = pixels[MIMG_COORD_IDX(w, x, y) + 2];
 }
+
+/** AUXILIARY FUNCTIONS **/
+
+#ifdef MIMG_DEBUG
+
+static void mimg_print_array(const char *name, stbi_uc *values, size_t length) {
+    printf("%s - [", name);
+    for(int i = 0; i < length; i ++) {
+        printf("%d", values[i]);
+        if(i != length - 1) {
+            printf(", ");
+        }
+    }
+    printf("]\n");
+}
+
+#endif
 
 /** MATHEMATICAL AIDS **/
 
@@ -109,6 +122,7 @@ extern inline int mimg_uint32_cmp(const void *a, const void *b) {
 }
 
 extern inline stbi_uc mimg_mediani(const stbi_uc *values, const stbi_uc length) {
+    // TODO: Code our own quicksort so we don't need to include stdlib.h
     qsort((void *) values, length, sizeof(stbi_uc), mimg_uint32_cmp);
     if (length % 2 == 0) {
         return (stbi_uc) round(((double) values[length / 2 - 1] + (double) values[length / 2]) / 2);
@@ -116,12 +130,49 @@ extern inline stbi_uc mimg_mediani(const stbi_uc *values, const stbi_uc length) 
     return values[length / 2];
 }
 
-void mimg_linspace(stbi_uc *values, const stbi_uc length, const stbi_uc min, const stbi_uc max) {
+void mimg_linspace(stbi_uc *values, const size_t length, const stbi_uc min, const stbi_uc max) {
     assert(max >= min);
+    assert(length > 0);
     double increment = ((double) (max - min)) / ((double) (length - 1));
-    for(int i = 0; i < length; i++) {
+    for(size_t i = 0; i < length; i++) {
         values[i] = mimg_clampd(((double) min) + (increment * ((double) i)));
     }
+}
+
+void mimg_logspace(stbi_uc *values, const size_t length, const stbi_uc min, const stbi_uc max) {
+    assert(max >= min);
+    assert(length > 0);
+
+    bool substract = false;
+    double maxd =(double) max;
+    if(min == 0) {
+        maxd += 1;
+        substract = true;
+    }
+
+    double *exps = calloc(length, sizeof(double));
+    double exp_inc = 1.0 / ((double) length - 1);
+    for(int i = 0; i < length; i++) {
+        exps[i] = i * exp_inc;
+    }
+
+    double *d_values = calloc(length, sizeof(double));
+    for(int i = 0; i < length; i++) {
+        d_values[i] = round(pow(maxd, exps[i]));
+    }
+
+    if(substract) {
+        for(int i = 0; i < length; i++) {
+            values[i] = mimg_clampd(d_values[i] - 1);
+        }
+    } else {
+        for(int i = 0; i < length; i++) {
+            values[i] = mimg_clampd(d_values[i]);
+        }
+    }
+
+    free(d_values);
+    free(exps);
 }
 
 /** AUXILIARY FUNCTIONS THAT DEAL WITH CASTING **/
@@ -458,32 +509,44 @@ void mimg_uniform_bin_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc 
     stbi_uc *limits = calloc((size_t) n_bins, sizeof(stbi_uc));
     // Mid value of each bin
     stbi_uc *values = calloc((size_t) n_bins, sizeof(stbi_uc));
-    // By taking the ceiling we guarantee all numbers in [0, 255] are represented
-    int increment = (int) ceil(255.0 / (double) n_bins);
-    stbi_uc upper_value, previous_value;
+
+    stbi_uc *base = calloc((size_t) n_bins + 1, sizeof(stbi_uc));
+    mimg_linspace(base, (size_t) n_bins + 1, 0, 255);
     for(int i = 0; i < n_bins; i++) {
-        previous_value = mimg_clampi(increment * i);
-        upper_value = mimg_clampi(increment * (i + 1));
-        limits[i] = upper_value;
-        values[i] = ((stbi_uc) round((double) (upper_value - previous_value) / 2.0)) + previous_value;
+        limits[i] = base[i + 1];
+        values[i] = ((stbi_uc) round((double) (base[i + 1] - base[i]) / 2.0)) + base[i];
     }
+
+#ifdef MIMG_DEBUG
+    mimg_print_array("UNIFORM BIN QUANTIZE - BASE", base, n_bins + 1);
+    mimg_print_array("UNIFORM BIN QUANTIZE - LIMITS", limits, n_bins);
+    mimg_print_array("UNIFORM BIN QUANTIZE - VALUES", values, n_bins);
+#endif
+
     mimg_bin_classify(w, h, px, out, n_bins, limits, values);
+    free(base);
     free(limits);
     free(values);
 }
 
-void mimg_logarithmic_bin_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc n_bins, MIMG_ORDER order) {
+void mimg_logarithmic_bin_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc n_bins) {
     assert(n_bins > 0);
 
     // Upper limit of each bin
-    stbi_uc *limits = calloc((size_t) n_bins, sizeof(stbi_uc));
+    stbi_uc *limits = calloc((size_t) n_bins + 1, sizeof(stbi_uc));
     // Mid value of each bin
     stbi_uc *values = calloc((size_t) n_bins, sizeof(stbi_uc));
 
-    // TODO: Get a logspace
+    stbi_uc *base = calloc((size_t) n_bins + 1, sizeof(stbi_uc));
+    mimg_logspace(base, (size_t) n_bins + 1, 0, 255);
+    for(int i = 0; i < n_bins; i++) {
+        limits[i] = base[i + 1];
+        values[i] = ((stbi_uc) round((double) (base[i + 1] - base[i]) / 2.0)) + base[i];
+    }
 
     mimg_bin_classify(w, h, px, out, n_bins, limits, values);
 
+    free(base);
     free(limits);
     free(values);
 }
