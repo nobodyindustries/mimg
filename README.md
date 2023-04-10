@@ -44,6 +44,8 @@ All images in the `test/original` folder are cuts of images under Creative Commo
 - Median filter
 - Laplacian sharpen
 - Directional sharpen by difference
+- Prewitt edge detection
+- Sobel edge detection
 
 ### Quantization
 
