@@ -52,5 +52,9 @@ All images in the `test/original` folder are cuts of images under Creative Commo
 - Mask color quantization with random addition
 - Uniform bin color quantization
 - Logarithmic bin color quantization
-- 
+
+### Color Space Conversion
+
+- Conversion to grayscale through component average
+- Conversion to grayscale through luminosity
 
