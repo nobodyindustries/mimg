@@ -31,6 +31,7 @@
 
 #define MIMG_LAPLACIAN_KERNEL_SIZE 3
 #define MIMG_DIFF_DIRECTIONAL_KERNEL_SIZE 3
+#define MIMG_PREWITT_KERNEL_SIZE 3
 
 /** MACRO DEFINITIONS **/
 #pragma mark Macros
@@ -204,6 +205,29 @@ extern inline stbi_uc mimg_pixel_luminosity(stbi_uc r, stbi_uc g, stbi_uc b) {
 extern inline stbi_uc mimg_pixel_average(stbi_uc r, stbi_uc g, stbi_uc b) {
 	double aux = (((double) r) + ((double) g) + ((double) b)) / 3;
 	return (stbi_uc)round(aux);
+}
+
+/** COLOR SPACE CHANGES */
+#pragma mark Color space changes
+
+void mimg_convert_grayscale_average(int w, int h, stbi_uc *px, stbi_uc *out) {
+	stbi_uc cr, cg, cb, avg;
+	for (int y = 0; y < h; y++)
+		for (int x = 0; x < w; x++) {
+			mimg_get_pixel(px, w, x, y, &cr, &cg, &cb);
+			avg = mimg_pixel_average(cr, cg, cb);
+			mimg_set_pixel(out, w, x, y, avg, avg, avg);
+		}
+}
+
+void mimg_convert_grayscale_luminosity(int w, int h, stbi_uc *px, stbi_uc *out) {
+	stbi_uc cr, cg, cb, l;
+	for (int y = 0; y < h; y++)
+		for (int x = 0; x < w; x++) {
+			mimg_get_pixel(px, w, x, y, &cr, &cg, &cb);
+			l = mimg_pixel_luminosity(cr, cg, cb);
+			mimg_set_pixel(out, w, x, y, l, l, l);
+		}
 }
 
 /** IMAGE ALGEBRA OPERATORS **/
@@ -452,6 +476,64 @@ void mimg_diff_directional_sharpen(int w, int h, stbi_uc *px, stbi_uc *out, MIMG
     mimg_convolve(w, h, px, out, MIMG_DIFF_DIRECTIONAL_KERNEL_SIZE, (double *) kernel_values);
 }
 
+void mimg_prewitt_edges(int w, int h, stbi_uc *px, stbi_uc *out) {
+
+	double kernel_values_h[] = {
+		1, 1, 1,
+		0, 0, 0,
+		-1, -1, -1
+	};
+	double kernel_values_v[] = {
+		1, 0, -1,
+		1, 0, -1,
+		1, 0, -1
+	};
+
+	stbi_uc *gs = calloc(MIMG_EXPECTED_N_CHANNELS * h * w, sizeof(stbi_uc));
+	stbi_uc *np1 = calloc(MIMG_EXPECTED_N_CHANNELS * h * w, sizeof(stbi_uc));
+	stbi_uc *np2 = calloc(MIMG_EXPECTED_N_CHANNELS * h * w, sizeof(stbi_uc));
+
+	mimg_convert_grayscale_luminosity(w, h, px, gs);
+
+	mimg_convolve(w, h, gs, np1, MIMG_PREWITT_KERNEL_SIZE, (double *) kernel_values_h);
+	mimg_convolve(w, h, gs, np2, MIMG_PREWITT_KERNEL_SIZE, (double *) kernel_values_v);
+
+	mimg_add(w, h, np1, np2, out);
+
+	free(gs);
+	free(np1);
+	free(np2);
+}
+
+void mimg_sobel_edges(int w, int h, stbi_uc *px, stbi_uc *out) {
+
+	double kernel_values_h[] = {
+		1, 2, 1,
+		0, 0, 0,
+		-1, -2, -1
+	};
+	double kernel_values_v[] = {
+		1, 0, -1,
+		2, 0, -2,
+		1, 0, -1
+	};
+
+	stbi_uc *gs = calloc(MIMG_EXPECTED_N_CHANNELS * h * w, sizeof(stbi_uc));
+	stbi_uc *np1 = calloc(MIMG_EXPECTED_N_CHANNELS * h * w, sizeof(stbi_uc));
+	stbi_uc *np2 = calloc(MIMG_EXPECTED_N_CHANNELS * h * w, sizeof(stbi_uc));
+
+	mimg_convert_grayscale_luminosity(w, h, px, gs);
+
+	mimg_convolve(w, h, gs, np1, MIMG_PREWITT_KERNEL_SIZE, (double *) kernel_values_h);
+	mimg_convolve(w, h, gs, np2, MIMG_PREWITT_KERNEL_SIZE, (double *) kernel_values_v);
+
+	mimg_add(w, h, np1, np2, out);
+
+	free(gs);
+	free(np1);
+	free(np2);
+}
+
 /** COLOR QUANTIZATION **/
 #pragma mark Color quantization
 
@@ -577,29 +659,6 @@ void mimg_logarithmic_bin_color_quantize(int w, int h, stbi_uc *px, stbi_uc *out
     free(base);
     free(limits);
     free(values);
-}
-
-/** COLOR SPACE CHANGES */
-#pragma mark Color space changes
-
-void mimg_convert_grayscale_average(int w, int h, stbi_uc *px, stbi_uc *out) {
-	stbi_uc cr, cg, cb, avg;
-	for (int y = 0; y < h; y++)
-		for (int x = 0; x < w; x++) {
-			mimg_get_pixel(px, w, x, y, &cr, &cg, &cb);
-			avg = mimg_pixel_average(cr, cg, cb);
-			mimg_set_pixel(out, w, x, y, avg, avg, avg);
-		}
-}
-
-void mimg_convert_grayscale_luminosity(int w, int h, stbi_uc *px, stbi_uc *out) {
-	stbi_uc cr, cg, cb, l;
-	for (int y = 0; y < h; y++)
-		for (int x = 0; x < w; x++) {
-			mimg_get_pixel(px, w, x, y, &cr, &cg, &cb);
-			l = mimg_pixel_luminosity(cr, cg, cb);
-			mimg_set_pixel(out, w, x, y, l, l, l);
-		}
 }
 
 #endif //MIMG_H
