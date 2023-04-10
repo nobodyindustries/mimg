@@ -51,6 +51,7 @@ add_executable(mimg_linspace examples/mimg_linspace.c ${MIMG_LIBRARIES})
 
 add_executable(mimg_logspace examples/mimg_logspace.c ${MIMG_LIBRARIES})
 
+add_executable(mimg_convert_grayscale examples/mimg_convert_grayscale.c ${MIMG_LIBRARIES})
 
 
 file(COPY test/original DESTINATION test)

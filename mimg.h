@@ -193,6 +193,19 @@ extern inline stbi_uc mimg_sub_clamp(stbi_uc v1, stbi_uc v2) {
     return mimg_clampi(i1 - i2);
 }
 
+/** COLOR CALCULATIONS */
+#pragma mark Color calculations
+
+extern inline stbi_uc mimg_pixel_luminosity(stbi_uc r, stbi_uc g, stbi_uc b) {
+	double aux = (((double) r) * 0.299) + (((double) g) * 0.587) + (((double) b) * 0.114);
+	return (stbi_uc)round(aux);
+}
+
+extern inline stbi_uc mimg_pixel_average(stbi_uc r, stbi_uc g, stbi_uc b) {
+	double aux = (((double) r) + ((double) g) + ((double) b)) / 3;
+	return (stbi_uc)round(aux);
+}
+
 /** IMAGE ALGEBRA OPERATORS **/
 #pragma mark Image algebra operators
 
@@ -564,6 +577,29 @@ void mimg_logarithmic_bin_color_quantize(int w, int h, stbi_uc *px, stbi_uc *out
     free(base);
     free(limits);
     free(values);
+}
+
+/** COLOR SPACE CHANGES */
+#pragma mark Color space changes
+
+void mimg_convert_grayscale_average(int w, int h, stbi_uc *px, stbi_uc *out) {
+	stbi_uc cr, cg, cb, avg;
+	for (int y = 0; y < h; y++)
+		for (int x = 0; x < w; x++) {
+			mimg_get_pixel(px, w, x, y, &cr, &cg, &cb);
+			avg = mimg_pixel_average(cr, cg, cb);
+			mimg_set_pixel(out, w, x, y, avg, avg, avg);
+		}
+}
+
+void mimg_convert_grayscale_luminosity(int w, int h, stbi_uc *px, stbi_uc *out) {
+	stbi_uc cr, cg, cb, l;
+	for (int y = 0; y < h; y++)
+		for (int x = 0; x < w; x++) {
+			mimg_get_pixel(px, w, x, y, &cr, &cg, &cb);
+			l = mimg_pixel_luminosity(cr, cg, cb);
+			mimg_set_pixel(out, w, x, y, l, l, l);
+		}
 }
 
 #endif //MIMG_H
