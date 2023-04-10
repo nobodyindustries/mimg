@@ -23,6 +23,7 @@
 #include "lib/cauldron_random.h"
 
 /** CONSTANT DEFINITIONS **/
+#pragma mark Constants
 
 #define MIMG_EXPECTED_N_CHANNELS 3
 #define MIMG_OUTPUT_JPG_QUALITY 100
@@ -32,11 +33,13 @@
 #define MIMG_DIFF_DIRECTIONAL_KERNEL_SIZE 3
 
 /** MACRO DEFINITIONS **/
+#pragma mark Macros
 
 #define MIMG_COORD_IDX(w, x, y) (3 * (((y) * (w)) + (x)))
 #define MIMG_COORDS_VALID(w, h, x, y) ((x) >= 0) && ((x) < (w)) && ((y) >= 0) && ((y) < (h))
 
 /** TYPE DEFINITIONS **/
+#pragma mark Types
 
 typedef enum mimg_direction {
     MIMG_VERTICAL = 0,
@@ -59,6 +62,7 @@ typedef struct stb_img {
 } STBImg;
 
 /** PIXEL MANIPULATION FUNCTIONS **/
+#pragma mark Pixel manipulation
 
 extern inline void mimg_set_pixel(stbi_uc *pixels, int w, int x, int y, stbi_uc r, stbi_uc g, stbi_uc b) {
     pixels[MIMG_COORD_IDX(w, x, y)] = r;
@@ -72,7 +76,8 @@ extern inline void mimg_get_pixel(stbi_uc *pixels, int w, int x, int y, stbi_uc 
     *b = pixels[MIMG_COORD_IDX(w, x, y) + 2];
 }
 
-/** AUXILIARY FUNCTIONS **/
+/** AUXILIARY DEBUG FUNCTIONS **/
+#pragma mark Debug functions
 
 #ifdef MIMG_DEBUG
 
@@ -90,6 +95,7 @@ static void mimg_print_array(const char *name, stbi_uc *values, size_t length) {
 #endif
 
 /** MATHEMATICAL AIDS **/
+#pragma mark Mathematical aids
 
 extern inline stbi_uc mimg_clampi(int i) {
     if (i < 0) {
@@ -175,8 +181,6 @@ void mimg_logspace(stbi_uc *values, const size_t length, const stbi_uc min, cons
     free(exps);
 }
 
-/** AUXILIARY FUNCTIONS THAT DEAL WITH CASTING **/
-
 extern inline stbi_uc mimg_add_clamp(stbi_uc v1, stbi_uc v2) {
     int i1 = (int) v1;
     int i2 = (int) v2;
@@ -190,6 +194,7 @@ extern inline stbi_uc mimg_sub_clamp(stbi_uc v1, stbi_uc v2) {
 }
 
 /** IMAGE ALGEBRA OPERATORS **/
+#pragma mark Image algebra operators
 
 void mimg_add(int w, int h, stbi_uc *px1, stbi_uc *px2, stbi_uc *out) {
     stbi_uc r1, g1, b1, r2, g2, b2;
@@ -260,6 +265,7 @@ void mimg_not(int w, int h, stbi_uc *px, stbi_uc *out) {
 }
 
 /** GENERALIZED CONVOLUTION OPERATOR **/
+#pragma mark Generalized convolution
 
 void mimg_convolve(int w, int h, stbi_uc *px, stbi_uc *out, int kernel_size, const double *kernel_values) {
     assert(kernel_size % 2 == 1);
@@ -296,6 +302,7 @@ void mimg_convolve(int w, int h, stbi_uc *px, stbi_uc *out, int kernel_size, con
 }
 
 /** NOISE **/
+#pragma mark Noise
 
 void mimg_noise_saltpepper(int w, int h, stbi_uc *px, stbi_uc *out, uint32_t p_change, uint32_t p_white) {
     assert(p_change >= 0 && p_change <= 100);
@@ -338,6 +345,7 @@ void mimg_noise_saltpepper(int w, int h, stbi_uc *px, stbi_uc *out, uint32_t p_c
 }
 
 /** FILTERS **/
+#pragma mark Filters
 
 void mimg_mean_filter(int w, int h, stbi_uc *px, stbi_uc *out, int kernel_size) {
     double *kernel_values = calloc((size_t) kernel_size * kernel_size, sizeof(double));
@@ -432,6 +440,7 @@ void mimg_diff_directional_sharpen(int w, int h, stbi_uc *px, stbi_uc *out, MIMG
 }
 
 /** COLOR QUANTIZATION **/
+#pragma mark Color quantization
 
 void mimg_threshold_color_quantize(int w, int h, stbi_uc *px, stbi_uc *out, stbi_uc threshold) {
     stbi_uc r, g, b, nr, ng, nb;
@@ -556,7 +565,5 @@ void mimg_logarithmic_bin_color_quantize(int w, int h, stbi_uc *px, stbi_uc *out
     free(limits);
     free(values);
 }
-
-/** SPATIAL QUANTIZATION **/
 
 #endif //MIMG_H
